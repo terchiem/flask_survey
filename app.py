@@ -9,6 +9,7 @@ debug = DebugToolbarExtension(app)
 
 responses = []
 
+
 @app.route('/')
 def start_survey():
 
@@ -16,3 +17,14 @@ def start_survey():
         survey_title=surveys.satisfaction_survey.title,
         instructions=surveys.satisfaction_survey.instructions)
 
+
+@app.route('/questions/<question>')
+def ask_question(question):
+
+    question_instance = surveys.satisfaction_survey.questions[int(question)]
+
+    return render_template('question.html',
+        question=question_instance.question,
+        choices=question_instance.choices)
+
+# TODO: make requirements.txt file
