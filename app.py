@@ -27,4 +27,14 @@ def ask_question(question):
         question=question_instance.question,
         choices=question_instance.choices)
 
+@app.route('/answer', methods=["POST"])
+def get_answer():
+    
+    responses.append(request.form['selection'])
+    index = len(responses)
+
+    return redirect(f"/questions/{index}")
+
+
+
 # TODO: make requirements.txt file
