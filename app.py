@@ -8,25 +8,39 @@ app.config['SECRET_KEY'] = "secret"
 debug = DebugToolbarExtension(app)
 
 @app.route('/')
+def select_survey():
+    """ Landing page for selecting a survey """
+
+    session['survey_id'] = None
+
+    return render_template('survey-select.html',
+        survey_titles=surveys.surveys.keys())
+
+@app.route('/start')
 def start_survey():
-    """ Landing page for start of survey """
+    """ Survey start page """
+
+    session['survey_id'] = request.args['survey_id']
+    current_survey = surveys.surveys[session['survey_id']]
 
     return render_template('survey.html',
-        survey_title=surveys.satisfaction_survey.title,
-        instructions=surveys.satisfaction_survey.instructions)
+        survey_title=current_survey.title,
+        instructions=current_survey.instructions)
 
 
 @app.route('/questions/<question>')
 def ask_question(question):
     """ Display form for survey question """
 
-    if len(surveys.satisfaction_survey.questions) == session['questions_answered']:
+    current_survey = surveys.surveys[session['survey_id']]
+
+    if len(current_survey.questions) == session['questions_answered']:
         return redirect('/thank-you')
     elif int(question) != session['questions_answered']:
         flash("Naughty naughty, don't do that.")
         return redirect(f"/questions/{session['questions_answered']}")
 
-    question_instance = surveys.satisfaction_survey.questions[int(question)]
+    question_instance = current_survey.questions[int(question)]
 
     return render_template('question.html',
         question=question_instance.question,
