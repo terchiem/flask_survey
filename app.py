@@ -25,6 +25,9 @@ def ask_question(question):
 
     if len(surveys.satisfaction_survey.questions) == session['questions_answered']:
         return redirect('/thank-you')
+    elif int(question) != session['questions_answered']:
+        flash("Naughty naughty, don't do that.")
+        return redirect(f"/questions/{session['questions_answered']}")
 
     question_instance = surveys.satisfaction_survey.questions[int(question)]
 

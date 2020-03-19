@@ -10,6 +10,10 @@
 
 <body>
 
+  {% for msg in get_flashed_messages() %}
+    <b><em><p style="color: red">{{ msg }}</p></em></b>
+  {% endfor %}
+
   {% block body %}
 
   {% endblock %}
