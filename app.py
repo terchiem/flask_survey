@@ -7,12 +7,9 @@ app.config['SECRET_KEY'] = "secret"
 
 debug = DebugToolbarExtension(app)
 
-responses = []
-
 @app.route('/')
 def start_survey():
     """ Landing page for start of survey """
-    session['questions_answered'] = 0
 
     return render_template('survey.html',
         survey_title=surveys.satisfaction_survey.title,
@@ -35,19 +32,37 @@ def ask_question(question):
         question=question_instance.question,
         choices=question_instance.choices)
 
+
 @app.route('/answer', methods=["POST"])
 def get_answer():
     """ Save response to reponses list and redirect to next question """
+    
+    responses = session['responses']
     responses.append(request.form['selection'])
-    index = len(responses)
+    index = len(session['responses'])
 
     session['questions_answered'] = index
 
     return redirect(f"/questions/{index}")
 
+
 @app.route('/thank-you')
 def show_thank_you():
     """ Display thank you page """
+
     return render_template('thank-you.html')
+
+
+@app.route('/reset-survey', methods=["POST"])
+def reset_session():
+    """ Resets session variables """
+
+    session['questions_answered'] = 0
+    session['responses'] = []
+
+    return redirect('/questions/0')
+
+
+
 
 # TODO: make requirements.txt file
